@@ -39,3 +39,7 @@ SHARP X680x0 対応のテキストプレーンフォント表示ライブラリ�
 
 
 
+# ライセンス
+
+Apache License Version 2.0 が適用されます。
+

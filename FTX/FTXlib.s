@@ -1,6 +1,6 @@
 *==========================================================================
 *                 テキストプレーンフォント表示システム FTX
-*                          ver 2.01     by よっしん
+*                          ver 2.02     by よっしん
 *==========================================================================
 
 	.globl	_ftx_pcgdat_set
@@ -53,6 +53,9 @@ arg6_b	ds.b	1
 	.even
 
 
+ALWAYS_SUPER	= 0		* 常にスーパーバイザモードか？
+
+
 *==========================================================================
 *
 * 書式：
@@ -95,9 +98,11 @@ A7ID	=	4			*   スタック上 return先アドレス  [ 4 byte ]
 					* + 退避レジスタの全バイト数     [ 0 byte ]
 
 	*=====[ スーパーバイザモードへ ]
+.if	ALWAYS_SUPER=0
 		suba.l	a1,a1
 		iocs	_B_SUPER	* スーパーバイザモードへ
 		move.l	d0,usp_bak	* 元々スーパーバイザモードの場合は d0.l=-1
+.endif
 
 
 	*=====[ 初期アドレス計算 ]
@@ -198,11 +203,13 @@ A7ID	=	4			*   スタック上 return先アドレス  [ 4 byte ]
 
 
 	*=====[ ユーザーモードへ ]
+.if	ALWAYS_SUPER=0
 		move.l	usp_bak(pc),d0
 		bmi.b	@F			* ユーザーモードから実行されていたので戻す必要なし
 			movea.l	d0,a1
 			iocs	_B_SUPER	* ユーザーモードへ
 		@@:
+.endif
 
 
 	*=====[ return ]
@@ -231,9 +238,11 @@ A7ID	=	4			*   スタック上 return先アドレス  [ 4 byte ]
 					* + 退避レジスタの全バイト数     [ 0 byte ]
 
 	*=====[ スーパーバイザモードへ ]
+.if	ALWAYS_SUPER=0
 		suba.l	a1,a1
 		iocs	_B_SUPER	* スーパーバイザモードへ
 		move.l	d0,usp_bak	* 元々スーパーバイザモードの場合は d0.l=-1
+.endif
 
 
 	*=====[ 初期アドレス計算 ]
@@ -350,11 +359,13 @@ A7ID	=	4			*   スタック上 return先アドレス  [ 4 byte ]
 
 
 	*=====[ ユーザーモードへ ]
+.if	ALWAYS_SUPER=0
 		move.l	usp_bak(pc),d0
 		bmi.b	@F			* ユーザーモードから実行されていたので戻す必要なし
 			movea.l	d0,a1
 			iocs	_B_SUPER	* ユーザーモードへ
 		@@:
+.endif
 
 	*=====[ return ]
 	rts
@@ -375,9 +386,11 @@ A7ID	=	4 + (5+4)*4		*   スタック上 return先アドレス  [ 4 byte ]
 	movem.l	d3-d7/a3-a6,-(a7)	* レジスタ退避
 
 	*=====[ スーパーバイザモードへ ]
+.if	ALWAYS_SUPER=0
 		suba.l	a1,a1
 		iocs	_B_SUPER	* スーパーバイザモードへ
 		move.l	d0,usp_bak	* 元々スーパーバイザモードの場合は d0.l=-1
+.endif
 
 	*=====[ テキストクリア実行 ]
 		move.w	$E8002A,CRTC_R21_bak		* CRTC_R21 現在値の退避
@@ -412,11 +425,13 @@ A7ID	=	4 + (5+4)*4		*   スタック上 return先アドレス  [ 4 byte ]
 		move.w	CRTC_R21_bak(pc),$E8002A	* CRTC_R21 現在値の復活
 
 	*=====[ ユーザーモードへ ]
+.if	ALWAYS_SUPER=0
 		move.l	usp_bak(pc),d0
 		bmi.b	@F			* ユーザーモードから実行されていたので戻す必要なし
 			movea.l	d0,a1
 			iocs	_B_SUPER	* ユーザーモードへ
 		@@:
+.endif
 
 	*=====[ return ]
 	movem.l	(a7)+,d3-d7/a3-a6	* レジスタ復活
@@ -444,20 +459,24 @@ A7ID	=	4			*   スタック上 return先アドレス  [ 4 byte ]
 					* + 退避レジスタの全バイト数     [ 0 byte ]
 
 	*=====[ スーパーバイザモードへ ]
+.if	ALWAYS_SUPER=0
 		suba.l	a1,a1
 		iocs	_B_SUPER	* スーパーバイザモードへ
 		move.l	d0,usp_bak	* 元々スーパーバイザモードの場合は d0.l=-1
+.endif
 
 	*=====[ テクストスクロールレジスタ書き込み ]
 		move.w	A7ID+arg1_w(sp),$E80014
 		move.w	A7ID+arg2_w(sp),$E80016
 
 	*=====[ ユーザーモードへ ]
+.if	ALWAYS_SUPER=0
 		move.l	usp_bak(pc),d0
 		bmi.b	@F			* ユーザーモードから実行されていたので戻す必要なし
 			movea.l	d0,a1
 			iocs	_B_SUPER	* ユーザーモードへ
 		@@:
+.endif
 
 	*=====[ return ]
 	rts
@@ -467,7 +486,7 @@ A7ID	=	4			*   スタック上 return先アドレス  [ 4 byte ]
 *==========================================================================
 *
 * 書式：
-*	void ftx_palette_set(short idx, short color);
+*	void ftx_palette_set(short idx, unsigned short color);
 *
 * 引数：
 *	idx :
@@ -620,8 +639,12 @@ loop:
 
 	.even
 
+.if	ALWAYS_SUPER=0
 usp_bak		dc.l	0
+.endif
+
 pcg_adr		dc.l	0
+
 CRTC_R21_bak	dc.w	0
 
 

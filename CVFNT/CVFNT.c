@@ -2,12 +2,12 @@
 	FTX 対応 スプライト PCG → フォントデータ変換ツール
 */
 
-# include	<sprite.h>
-# include	<stdio.h>
-# include	<stdlib.h>
-# include	<stdint.h>
-# include	<stdbool.h>
-# include	"../FTX/FTX2lib.H"
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "../FTX/FTX2lib.H"
 
 
 static void
@@ -277,4 +277,3 @@ main(
 	return 0;
 }
 
-

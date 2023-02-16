@@ -197,7 +197,7 @@ main(
 		);
 
 		/* 正常終了 */
-		return 0;
+		return EXIT_SUCCESS;
 	}
 
 	/* 引数解析 */
@@ -209,7 +209,7 @@ main(
 					printf("引数指定が不足しています。\n");
 
 					/* 異常終了 */
-					return 1;
+					return EXIT_FAILURE;
 				}
 				pszInputFileName = argv[iArg + 1];
 				iArg++;		/* 引数をスキップ */
@@ -219,7 +219,7 @@ main(
 					printf("引数指定が不足しています。\n");
 
 					/* 異常終了 */
-					return 1;
+					return EXIT_FAILURE;
 				}
 				pszOutputFileName = argv[iArg + 1];
 				iArg++;		/* 引数をスキップ */
@@ -227,7 +227,7 @@ main(
 				printf("引数指定が不正です。\n");
 
 				/* 異常終了 */
-				return 1;
+				return EXIT_FAILURE;
 			}
 
 			/* 次の要素へ */
@@ -240,13 +240,13 @@ main(
 		printf("	入力ファイル名が指定されていません。\n");
 
 		/* 異常終了 */
-		return 1;
+		return EXIT_FAILURE;
 	}
 	if (pszOutputFileName == NULL) {
 		printf("	出力ファイル名が指定されていません。\n");
 
 		/* 異常終了 */
-		return 1;
+		return EXIT_FAILURE;
 	}
 
 	/* 解析結果を表示 */
@@ -269,11 +269,11 @@ main(
 	) {
 		/* 異常終了 */
 		printf("異常終了\n");
-		return 1;
+		return EXIT_FAILURE;
 	}
 
 	/* 正常終了 */
 	printf("正常終了\n");
-	return 0;
+	return EXIT_SUCCESS;
 }
 

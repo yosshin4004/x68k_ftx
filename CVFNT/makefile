@@ -79,16 +79,16 @@ $(EXECUTABLE) : $(OBJS)
 	rm -f $(HLK_LINK_LIST)
 	@for FILENAME in $(OBJS); do\
 		echo $$FILENAME >> $(HLK_LINK_LIST); \
-        done
+	done
 	@for FILENAME in $(LIBS); do\
 		cp $$FILENAME $(INTERMEDIATE_DIR)/`basename $$FILENAME`; \
 		echo $(INTERMEDIATE_DIR)/`basename $$FILENAME` >> $(HLK_LINK_LIST); \
-        done
+	done
 	$(HLK) -i $(HLK_LINK_LIST) -o $(EXECUTABLE)
 
 # *.c ソースのコンパイル
 $(INTERMEDIATE_DIR)/%.o : %.c makefile
-	mkdir -p $(INTERMEDIATE_DIR)
+	mkdir -p $(dir $(INTERMEDIATE_DIR)/$*.o)
 	$(CC) -S $(CFLAGS) -o $(INTERMEDIATE_DIR)/$*.m68k-gas.s -MT $(INTERMEDIATE_DIR)/$*.o -MD -MP -MF $(INTERMEDIATE_DIR)/$*.d $<
 	$(GAS2HAS) -i $(INTERMEDIATE_DIR)/$*.m68k-gas.s -o $(INTERMEDIATE_DIR)/$*.s
 	rm -f $(INTERMEDIATE_DIR)/$*.m68k-gas.s
@@ -96,6 +96,6 @@ $(INTERMEDIATE_DIR)/%.o : %.c makefile
 
 # *.s ソースのアセンブル
 $(INTERMEDIATE_DIR)/%.o : %.s makefile
-	mkdir -p $(INTERMEDIATE_DIR)
+	mkdir -p $(dir $(INTERMEDIATE_DIR)/$*.o)
 	$(HAS) -e -u -w0 $(INCLUDE_FLAGS) $*.s -o $(INTERMEDIATE_DIR)/$*.o
 
